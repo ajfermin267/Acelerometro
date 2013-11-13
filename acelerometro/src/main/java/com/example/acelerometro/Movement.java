@@ -6,12 +6,10 @@ package com.example.acelerometro;
  |--------------------------------------------
  | 0: Posicionado solo en x (horizontalmente)
  | 1: Posicionado solo en Y (verticalmente)
- | 2: Posicionado solo en Y (en profundidad)
+ | 2: Posicionado solo en Z (en profundidad)
  |
  |
  */
-
-
 
 public class Movement {
 
@@ -21,7 +19,19 @@ public class Movement {
     private int type;
     private int prevType, maxMove, countMove;
 
-    public Movement(float x, float y, float z, long currentTime, int type, int maxMove){
+
+    public Movement(){
+        this.x=0;
+        this.y=0;
+        this.z=0;
+        this.currentTime= 0;
+        this.type=0;
+        this.prevType=-1;
+        this.maxMove=0;
+        this.countMove=0;
+    }
+
+    public void setMovement(float x, float y, float z, long currentTime, int type, int maxMove){
         this.x=x;
         this.y=y;
         this.z=z;
@@ -82,6 +92,7 @@ public class Movement {
 
     public void setPrevType(int prevType){
         this.prevType=prevType;
+
     }
 
     public void setCountMove(int countMove){
@@ -94,7 +105,6 @@ public class Movement {
 
     public int isMovement(float x, float y, float z, long lastTime){
 
-
         if(!(this.getX()==x && this.getY()==y && this.getZ()==z)){
             switch (this.getType()){
                 case 0:
@@ -103,7 +113,6 @@ public class Movement {
                             this.update(x, y, z, 1, lastTime);
                             return this.getActionY();
                         }
-
                     }
                     break;
                 case 1:
@@ -113,14 +122,52 @@ public class Movement {
                             return this.getActionX();
                         }
                     }
+                   if(z > 7 && y < 3 && y > -1){
+                        if(this.deltaTime(lastTime)){
+                            this.update(x, y, z, 2, lastTime);
+                            return this.getActionZ();
+                        }
+                    }
+                    if(x < -7 && y < 3 && y > -1){
+                        if(this.deltaTime(lastTime)){
+                            this.update(x, y, z, 3, lastTime);
+                            return this.getActionX();
+                        }
+                    }
+                    if(z < -7 && y < 3 && y > -1){
+                        if(this.deltaTime(lastTime)){
+                            this.update(x, y, z, 5, lastTime);
+                            return this.getActionZ();
+                        }
+                    }
+                    break;
+                case 2:
+                    if(y > 7 && y < 11 && x < 2 && x > -2){
+                        if(this.deltaTime(lastTime)){
+                            this.update(x, y, z, 1, lastTime);
+                            return this.getActionY();
+                        }
+                    }
+                    break;
+                case 3:
+                    if(y > 7 && y < 11 && x < 2 && x > -2){
+                        if(this.deltaTime(lastTime)){
+                            this.update(x, y, z, 1, lastTime);
+                            return this.getActionY();
+                        }
+                    }
+                    break;
+                case 5:
+                    if(y > 7 && y < 11 && x < 2 && x > -2){
+                        if(this.deltaTime(lastTime)){
+                            this.update(x, y, z, 1, lastTime);
+                            return this.getActionY();
+                        }
+                    }
                     break;
 
-                case 2:
-                    break;
             }
         }
-
-
         return -1;
     }
 
@@ -141,12 +188,14 @@ public class Movement {
             case -1:
                 return -1;
             case 1:
-                if(this.getCountMove()==this.getMaxMove()){
+                if(this.getCountMove()==this.getMaxMove() && this.getX() > 0){
                     setCountMove(0);
                     return 0;
                 }
-
-
+                if(this.getCountMove()==this.getMaxMove() && this.getX() < 0){
+                    setCountMove(0);
+                    return 1;
+                }
                 break;
             case 2:
                 break;
@@ -166,8 +215,23 @@ public class Movement {
                 }
                 break;
             case 2:
+                if(this.getCountMove()==this.getMaxMove()){
+                    setCountMove(0);
+                    return 11;
+                }
                 break;
-
+            case 3:
+                if(this.getCountMove()==this.getMaxMove()){
+                    setCountMove(0);
+                    return 12;
+                }
+                break;
+            case 5:
+                if(this.getCountMove()==this.getMaxMove()){
+                    setCountMove(0);
+                    return 13;
+                }
+                break;
         }
         return -1;
     }
@@ -177,6 +241,14 @@ public class Movement {
             case -1:
                 return -1;
             case 0:
+                if(this.getCountMove()==this.getMaxMove() && this.getZ() > 0){
+                    setCountMove(0);
+                    return 20;
+                }
+                if(this.getCountMove()==this.getMaxMove() && this.getZ() < 0){
+                    setCountMove(0);
+                    return 21;
+                }
                 break;
             case 1:
                 break;
